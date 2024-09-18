@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Food Oasis </title>
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="icon" type="image/png" href="favicon.png">	
+</head>
+<body>
+
+<!-- header section starts  -->
+
+<header class="header">
+
+   <section class="flex">
+
+      <a href="#home" class="logo"><span>F</span>ood<span>O</span>asis</a>
+
+      <nav class="navbar">
+         <a href="#home">Home</a>
+         <a href="#menu">Menu</a>
+         <a href="#order">Order</a>
+      </nav>
+
+      <div class="icons">
+         <div id="menu-btn" class="fas fa-bars"></div>
+         <div id="user-btn" class="fas fa-user"></div>
+         <div id="order-btn" class="fas fa-box"></div>
+         <div id="cart-btn" class="fas fa-shopping-cart"><span>(0)</span></div>
+      </div>
+
+   </section>
+
+</header>
+
+<!-- header section ends -->
+
+<div class="user-account">
+
+   <section>
+	
+      <div id="close-account"><span>close</span></div>
+      
+		<div class="user">
+		    <p th:if="${username != null}">
+		        <span th:text="'Welcome, ' + ${username} + '!'"></span>
+		        <form th:if="${username != null}" action="/logout" method="post">
+		            <button type="submit" class="btn">Logout</button>
+		        </form>
+		    </p>
+		    <p th:unless="${username != null}">
+		        <span>You are not logged in!</span>
+		    </p>
+		</div>
+
+
+      <div class="display-orders">
+         <p><span>your cart is empty!</span></p>
+      </div>
+
+      <div class="flex">
+
+         <form id="loginForm" action="/login" method="post">
+            <h3>login now</h3>
+            <input type="text" name="username" required class="box" placeholder="Enter your User-Id" maxlength="50">
+            <input type="password" name="password" required class="box" placeholder="Enter your password" maxlength="20">
+            <input type="submit" value="login now" name="login" class="btn">
+         </form>
+
+         <form action="" method="post" style="display: none;" id="update-password-form"> <!-- Update action to point to the script for updating password -->
+            <h3>Update Password</h3>
+            <input type="password" name="old_pass" required class="box" placeholder="Enter your old password" maxlength="20">
+            <input type="password" name="new_pass" required class="box" placeholder="Enter your new password" maxlength="20">
+            <input type="password" name="confirm_new_pass" required class="box" placeholder="Confirm your new password" maxlength="20">
+            <input type="submit" value="Update Password" name="update_pass" class="btn">
+         </form>
+      </div>
+   </section>
+
+</div>
+
+<div class="my-orders">
+
+   <section>
+
+      <div id="close-orders"><span>close</span></div>
+
+      <h3 class="title"> my orders </h3>
+
+      <p class="empty">nothing ordered yet!</p>
+
+   </section>
+
+</div>
+
+<div class="shopping-cart">
+
+   <section>
+
+      <div id="close-cart"><span>close</span></div>
+
+      <p class="empty"><span>your cart is empty!</span></p>
+
+      <div class="cart-total"> grand total : <span>0/-</span></div>
+
+      <a href="#order" class="btn">order now</a>
+
+   </section>
+
+</div>
+
+<div class="home-bg">
+
+   <section class="home" id="home">
+
+      <div class="slide-container">
+
+         <div class="slide active">
+            <div class="image">
+               <img src="images/logo.png" alt="">
+            </div>
+            <div class="content">
+               <h3>Food Oasis</h3>
+            </div>
+         </div>
+
+      </div>
+
+   </section>
+
+</div>
+
+    <section id="menu" class="menu">
+        <h1 class="heading">Menu</h1>
+        <!-- Search bar form -->
+<!--        <center>
+            <form id="searchForm" action="" method="GET">
+                <input type="text" id="searchInput" name="search" placeholder="Search by name...">
+                <button type="submit">Search</button>
+            </form>
+        </center> -->
+        <br>
+		<div class="box-container">
+		    <div th:each="product : ${products}" class="box">
+		        <div class="price" th:text="${product.price} + '/-'"></div>
+		        <img th:src="${product.image}">
+		        <div class="name" th:text="${product.name}"></div>
+		        <form action="" method="post" name="add_to_cart">
+				        <input th:if="${product.available == true}" type="number" name="qty" class="qty" min="1" max="99"  value="1">
+				        <input th:if="${product.available == true}" type="submit" class="btn" name="add_to_cart" value="Add to Cart">
+				        <input th:if="${product.available != true}" type="number" name="qty" class="qty" min="1" max="99" value="1">
+				        <input th:if="${product.available != true}" type="submit" class="btn" name="add_to_cart" value="Not Available" disabled>
+
+	            </form>
+		    </div>
+		</div>
+
+    </section>
+
+<section class="order" id="order">
+
+   <h1 class="heading">Order</h1>
+
+   <form action="" method="post">
+
+      <div class="display-orders">
+
+         <p class="empty"><span>your cart is empty!</span></p>
+
+      </div>
+
+      <div class="grand-total"> Total : <span>0/-</span></div>
+
+      <input type="hidden" name="total_products" value="">
+      <input type="hidden" name="total_price" value="0">
+
+      <div class="flex">
+         <div class="inputBox">
+            <span>Your Name :</span>
+            <input readonly type="text" name="name" class="box" required value="... ">
+         </div>
+         <div class="inputBox">
+            <span>Your User-Id  :</span>
+            <input readonly type="text" name="number" class="box" required value="... ">
+         </div>
+         <div class="inputBox">
+            <span>Payment Method</span>
+            <select name="method" class="box">
+               <option value="cash on delivery">cash</option>
+               <option value="credit card">google pay</option>
+            </select>
+         </div>
+      </div>
+
+      <input type="submit" value="order now" class="btn" name="order">
+
+   </form>
+
+</section>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
